@@ -244,7 +244,7 @@ bot.command("upload", function (msg, reply, next) {
   // Catch errors but do nothing, they'll be propagated to the handler below
   stream.on("error", function (e) {});
 
-  reply.action("upload_media").media(stream).then(function (e, msg) {
+  reply.action("upload_video").video(stream).then(function (e, msg) {
     if (e)
       return reply.html("Couldn't send file: %s", e.message);
     fileUploads[msg.id] = file;
