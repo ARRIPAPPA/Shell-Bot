@@ -85,8 +85,7 @@ RUN apt-get update \
   && tar -xvf *xz \
   && cp *5.1/bin/* /usr/bin \
   && rm -rf *xz \
-  && rm -rf *5.1 \
-  && pip3 install --no-cache-dir -r requirements.txt
+  && rm -rf *5.1
 
 # setup workdir
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
