@@ -77,15 +77,10 @@ RUN npm install
 
 # install FFmpeg and other dependencies
 RUN apt-get update \
-  && apt-get install libgl1 -y \
-  && apt-get install -y libglib2.0-0 libsm6 libxrender1 libxext6 \
-  && apt-get install wget -y \
-  && apt-get install xz-utils -y \
+  && apt-get install -y libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 wget xz-utils \
   && wget https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.1-latest-linux64-gpl-5.1.tar.xz \
-  && tar -xvf *xz \
-  && cp *5.1/bin/* /usr/bin \
-  && rm -rf *xz \
-  && rm -rf *5.1
+  && tar -xvf ffmpeg-n5.1-latest-linux64-gpl-5.1.tar.xz -C /usr/bin/ --strip-components=1 \
+  && rm ffmpeg-n5.1-latest-linux64-gpl-5.1.tar.xz \
 
 # setup workdir
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
