@@ -38,6 +38,10 @@ RUN wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz 
     cd ffmpeg-*-static && \
     mv "${PWD}/ffmpeg" "${PWD}/ffprobe" /usr/local/bin/
 
+# Install pip
+RUN apt-get update \
+  && apt-get install python3-pip -y
+
 ENV LANG C.UTF-8
 
 # we don't have an interactive xTerm
@@ -55,14 +59,14 @@ RUN curl https://rclone.org/install.sh | bash && \
 RUN aria2c https://github.com/l3v11/gclone/releases/download/v1.58.0-coffee/gclone-v1.58.0-coffee-linux-amd64.zip && \
     unzip gclone-v1.58.0-coffee-linux-amd64.zip && mv gclone-v1.58.0-coffee-linux-amd64/gclone /usr/bin && chmod +x /usr/bin/gclone && rm -r gclone-v1.58.0-coffee-linux-amd64
 
-#drive downloader
+# drive downloader
 RUN curl -L https://github.com/jaskaranSM/drivedlgo/releases/download/1.5/drivedlgo_1.5_Linux_x86_64.gz -o drivedl.gz && \
     7z x drivedl.gz && mv drivedlgo /usr/bin/drivedl && chmod +x /usr/bin/drivedl && rm drivedl.gz
 
-#ngrok
+# ngrok
 RUN aria2c https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && unzip ngrok-stable-linux-amd64.zip && mv ngrok /usr/bin/ && chmod +x /usr/bin/ngrok
 
-#install rmega
+# install rmega
 RUN gem install rmega
 
 # Copies config(if it exists)
@@ -71,9 +75,18 @@ COPY . .
 # Install requirements and start the bot
 RUN npm install
 
-#install requirements
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+# install FFmpeg and other dependencies
+RUN apt-get update \
+  && apt-get install libgl1 -y \
+  && apt-get install -y libglib2.0-0 libsm6 libxrender1 libxext6 \
+  && apt-get install wget -y \
+  && apt-get install xz-utils -y \
+  && wget https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.1-latest-linux64-gpl-5.1.tar.xz \
+  && tar -xvf *xz \
+  && cp *5.1/bin/* /usr/bin \
+  && rm -rf *xz \
+  && rm -rf *5.1 \
+  && pip3 install --no-cache-dir -r requirements.txt
 
 # setup workdir
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
